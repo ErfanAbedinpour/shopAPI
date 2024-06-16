@@ -1,0 +1,181 @@
+<!doctype html>
+<html lang="fa">
+  <head>
+    <meta charset="utf-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>کالا ها</title>
+    <link rel="icon" href="img/favicon.png" type="image/png" sizes="16x16" />
+    <link rel="stylesheet" href="/css/font-awesome.min.css" />
+    <link rel="stylesheet" href="/css/themify-icons.css" />
+    <link rel="stylesheet" href="/fonts/flaticon.css" />
+    <link rel="stylesheet" href="/css/magnific-popup.css" />
+    <link href="/css/owl.theme.default.min.css" rel="stylesheet" />
+    <link href="/css/owl.carousel.min.css" rel="stylesheet" />
+    <link href="/css/bootstrap.min.css" rel="stylesheet" />
+    <link href="/css/style.css" rel="stylesheet" />
+  </head>
+  <body>
+    <div id="main" class="main-content-wraper">
+      <div class="main-content-inner">
+        <header class="header"><%-include('partials/_header') %></header>
+        <section id="hero" class="section-hero section-rotate">
+          <%-include('partials/_title') %>
+        </section>
+         <section id="discount" class="biz-product-section ptb-40">
+          <div class="biz-product-wrap">
+            <div class="container">
+              <div class="row justify-content-center">
+                <div class="col-md-6">
+                  <div class="text-center section-heading">
+                    <h3>محصولات رشته کامپیوتر</h3>
+                  </div>
+                </div>
+              </div>
+              <hr/>
+              <div class="row">
+                <div class="col-md-12">
+                  <div
+                  <% if(computerProduct.length>=1) {%>
+                    class="owl-carousel owl-theme biz-products carousel-indicator">
+                      <% computerProduct.forEach(item=>{ %>
+                        <div class="biz-single-product item" style="border:10px solid #7ab3ef">
+                          <div class="biz-product-img border">
+                            <img
+                              src="data:<%=item.image.contentType%>;base64,<%=item.image.data.toString('base64') %>"
+                              alt="Smart Product"
+                              class="img-responsive" />
+                          </div>
+                          <div class="biz-product-content">
+                            <p><%=item.title %></p>
+                            <div class="price">
+                              <h5>
+                                <span class="original-price">قیمت:<%=item.price %></span>
+                              </h5>
+                              <h5>
+                                <span class="original-price">بازدید:<%=item.view %></span>
+                              </h5>
+                            </div>
+                            <div class="product-action-btn text-center mt-20">
+                              <a href="/product/details/<%=item.id.toString() %>">مشاهده جزئیات</a>
+                            </div>
+                          </div>
+                        </div>
+                      <% }) %>
+                  <% }else{%>
+                    <h2 style="text-align: center; color: black;">محصولی وجود ندارد در این رشته</h2>
+                  <% } %>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </section>
+         <section id="discount" class="biz-product-section ptb-40">
+
+          <div class="biz-product-wrap">
+            <div class="container">
+              <div class="row justify-content-center">
+                <div class="col-md-6">
+                  <div class="text-center section-heading">
+                    <h3>محصولات رشته حسابداری</h3>
+                  </div>
+                </div>
+              </div>
+              <hr/>
+              <div class="row">
+                <div class="col-md-12">
+                  <div
+                  <% if(accountProduct.length>=1) {%>
+                    class="owl-carousel owl-theme biz-products carousel-indicator">
+                      <% accountProduct.forEach(item=>{ %>
+                        <div class="biz-single-product item" style="border:10px solid #7ab3ef">
+                          <div class="biz-product-img border">
+                            <img
+                              src="data:<%=item.image.contentType%>;base64,<%=item.image.data.toString('base64') %>"
+                              alt="Smart Product"
+                              class="img-responsive" />
+                          </div>
+                          <div class="biz-product-content">
+                            <p><%=item.title %></p>
+                            <div class="price">
+                              <h5>
+                                <span class="original-price">قیمت:<%=item.price %></span>
+                              </h5>
+                            </div>
+                            <div class="product-action-btn text-center mt-20">
+                              <a href="/product/details/<%=item.id.toString() %>">مشاهده جزئیات</a>
+                            </div>
+                          </div>
+                        </div>
+                      <% }) %>
+                  <% }else{%>
+                    <h2 style="text-align: center; color: black;">محصولی وجود ندارد در این رشته</h2>
+                  <% } %>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </section>
+         <section id="discount" class="biz-product-section ptb-40">
+          <div class="biz-product-wrap">
+            <div class="container">
+              <div class="row justify-content-center">
+                <div class="col-md-6">
+                  <div class="text-center section-heading">
+                    <h3>محصولات رشته گرافیک</h3>
+                  </div>
+                </div>
+              </div>
+              <hr/>
+              <div class="row">
+                <div class="col-md-12">
+                  <div
+                  <% if(graphicProduct.length>=1) {%>
+                    class="owl-carousel owl-theme biz-products carousel-indicator">
+                      <% graphicProduct.forEach(item=>{ %>
+                        <div class="biz-single-product item" style="border:10px solid #7ab3ef">
+                          <div class="biz-product-img border">
+                            <img
+                              src="data:<%=item.image.contentType%>;base64,<%=item.image.data.toString('base64') %>"
+                              alt="Smart Product"
+                              class="img-responsive" />
+                          </div>
+                          <div class="biz-product-content">
+                            <p><%=item.title %></p>
+                            <div class="price">
+                              <h5>
+                                <span class="original-price">قیمت:<%=item.price %></span>
+                              </h5>
+                            </div>
+                            <div class="product-action-btn text-center mt-20">
+                              <a href="/product/details/<%=item.id.toString() %>">مشاهده جزئیات</a>
+                            </div>
+                          </div>
+                        </div>
+                      <% }) %>
+                  <% }else{%>
+                    <h2 style="text-align: center; color: black;">محصولی وجود ندارد در این رشته</h2>
+                  <% } %>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </section>
+        <hr />
+        <footer class="footer-section bg-secondary ptb-40">
+          <%-include('partials/_footer') %>
+        </footer>
+      </div>
+    </div>
+    <script src="/js/jquery-3.3.1.min.js"></script>
+    <script src="/js/bootstrap.min.js"></script>
+    <script src="/js/jquery.easeScroll.min.js"></script>
+    <script src="/js/owl.carousel.min.js"></script>
+    <script src="/js/jquery.easing.min.js"></script>
+    <script src="/js/magnific-popup.min.js"></script>
+    <script src="/js/scripts.js"></script>
+  </body>
+</html>
