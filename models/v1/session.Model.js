@@ -1,5 +1,6 @@
 const mongoose = require("mongoose");
 const crypto = require("crypto");
+const session = require("express-session");
 const schema = new mongoose.Schema({
   session: {
     type: String,
@@ -19,13 +20,16 @@ const schema = new mongoose.Schema({
 //generate sesssion ID
 schema.statics.generateSession = async function (id) {
   try {
-    const session = crypto.randomBytes(20).toString("hex");
+    let session = "";
+    do {
+      session = crypto.randomBytes(20).toString("hex");
+    } while (await model.findOne(session));
     const result = await model.create({
       session,
       user: id,
       expireTime: 24 * 7 * 60 * 60 * 1000 + date.now(),
     });
-    if (!result) throw new Error("faild to save ");
+    if (!result) throw new Error("faild to saved in DB");
     return session;
   } catch (error) {
     throw new Error(error.message);
