@@ -2,6 +2,7 @@
 const crypto = require("crypto");
 const userModel = require("../../../models/v1/user");
 const bcrypt = require("bcrypt");
+const sessionModel = require("../../../models/v1/session.Model");
 const jsonwebtoken = require("jsonwebtoken");
 const sendMail = require("../../../utils/helper/sendMail");
 const resetPasswordModel = require("../../../models/v1/resetPassword");
@@ -46,7 +47,7 @@ exports.login = async (req, res, next) => {
     //get body
     const { email, password } = req.body;
     //get user
-    let user = await userModel
+    const user = await userModel
       .findOne({ email })
       .select("-createdAt -updatedAt -__v");
     //validation user
@@ -61,15 +62,13 @@ exports.login = async (req, res, next) => {
     if (user.isBan) {
       return response.errorResponse(res, 403, "error", "you banned from admin");
     }
-    const session = crypto.randomBytes(30).toString("hex");
-    redis.hSet(session, {
-      id: user._id,
-    });
-    //generate token
-    res.cookie("accessToken", accessToken, {
+    //create SessionID token and save on cookie
+    const sessionID = await sessionModel.generateSession(user);
+    res.cookie("sessionID", sessionID, {
       httpOnly: true,
       maxAge: Date.now() + 60 * 60 * 24 * 10 * 1000,
     });
+    //conver user to object for delete some prop
     const userObj = user.toObject();
     Reflect.deleteProperty(userObj, "password");
     //send response
@@ -78,6 +77,7 @@ exports.login = async (req, res, next) => {
       user: {
         user: userObj,
       },
+      sessionID: sessionID,
     });
   } catch (err) {
     next(err);
@@ -128,8 +128,9 @@ exports.changePassword = async (req, res, next) => {
   try {
     const { token, password } = req.body;
     const findUserWithToken = await resetPasswordModel.findOne({ token });
-    if (!findUserWithToken)
+    if (!findUserWithToken) {
       return response.errorResponse(res, 400, "error", "url is expired");
+    }
     const resultToChange = await userModel.findByIdAndUpdate(
       findUserWithToken.user,
       {
@@ -138,11 +139,12 @@ exports.changePassword = async (req, res, next) => {
     );
     if (resultToChange) {
       const deleteResult = await resetPasswordModel.deleteOne({ token });
-      if (deleteResult)
+      if (deleteResult) {
         return response.successResponse(res, 202, {
           code: "success",
           msg: "password change succesfully",
         });
+      }
     }
     return response.errorResponse(res, 400, "error", "change faild");
   } catch (err) {
@@ -154,13 +156,14 @@ exports.accessToken = async function (req, res, next) {
   try {
     const { token } = req.body;
     const user = await refreshTokenModel.verifyToken(token);
-    if (!user)
+    if (!user) {
       return response.errorResponse(
         res,
         401,
         "not found",
         "please login again token is expire",
       );
+    }
     const accessToken = jsonwebtoken.sign(
       { id: user._id },
       process.env["JWT_SECRET"],
