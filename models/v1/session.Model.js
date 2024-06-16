@@ -20,11 +20,13 @@ const schema = new mongoose.Schema({
 schema.statics.generateSession = async function (id) {
   try {
     const session = crypto.randomBytes(20).toString("hex");
-    await model.create({
+    const result = await model.create({
       session,
       user: id,
       expireTime: 24 * 7 * 60 * 60 * 1000 + date.now(),
     });
+    if (!result) throw new Error("faild to save ");
+    return session;
   } catch (error) {
     throw new Error(error.message);
   }
