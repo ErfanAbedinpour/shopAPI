@@ -1,6 +1,6 @@
 const mongoose = require("mongoose");
 const crypto = require("crypto");
-const session = require("express-session");
+
 const schema = new mongoose.Schema({
   session: {
     type: String,
@@ -18,16 +18,16 @@ const schema = new mongoose.Schema({
 });
 
 //generate sesssion ID
-schema.statics.generateSession = async function (id) {
+schema.statics.generateSession = async function (user) {
   try {
     let session = "";
     do {
       session = crypto.randomBytes(20).toString("hex");
-    } while (await model.findOne(session));
+    } while (await model.findOne({ session }));
     const result = await model.create({
       session,
-      user: id,
-      expireTime: 24 * 7 * 60 * 60 * 1000 + date.now(),
+      user: user._id,
+      expireTime: 24 * 7 * 60 * 60 * 1000 + Date.now(),
     });
     if (!result) throw new Error("faild to saved in DB");
     return session;
@@ -37,12 +37,12 @@ schema.statics.generateSession = async function (id) {
 };
 // verify sessionID
 schema.statics.isSessionValid = async function (session) {
-  const session = await model.findOne({ session });
-  if (!session || session.expireTime < Date.now()) {
+  const sessionID = await model.findOne({ session });
+  if (!sessionID || sessionID.expireTime < Date.now()) {
     return false;
   }
-  return session.user;
+  return sessionID.user;
 };
 
-const model = mongoose.model("refreshToken", schema);
+const model = mongoose.model("sessions", schema);
 module.exports = model;
