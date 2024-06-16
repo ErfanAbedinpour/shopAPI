@@ -1,34 +1,23 @@
 const { Router } = require("express");
 const controller = require("./admin.controller");
 const validator = require("../../../middlewares/validator.middleware");
-const singUpValidatorPattern = require("../auth/auth.validator");
-const authMiddleware = require("../../../middlewares/authMiddlewares");
-
+const isLoginUser = require("../../../middlewares/isAdmin");
+const isAdmin = require("../../../middlewares/isAdmin");
+const authValidator = require("../auth/auth.validator");
 const router = Router();
 
 router
   .route("/")
-  .get(
-    authMiddleware.authUser,
-    authMiddleware.isAdminUser,
-    controller.showUsers,
-  )
+  .get(isLoginUser, isAdmin, controller.showUsers)
   .post(
-    authMiddleware.authUser,
-    authMiddleware.isAdminUser,
-    validator(singUpValidatorPattern.singUp),
+    isLoginUser,
+    isAdmin,
+    validator(authValidator.singUp),
     controller.addUser,
   );
 
-router.delete(
-  "/:id",
-  authMiddleware.authUser,
-  authMiddleware.isAdminUser,
-  controller.remove,
-);
+router.delete("/:id", isLoginUser, isAdmin, controller.remove);
 
-router
-  .route("/users")
-  .get(authMiddleware.authUser, authMiddleware.isAdminUser, controller.search);
+router.route("/users").get(isLoginUser, isAdmin, controller.search);
 
 module.exports = router;
