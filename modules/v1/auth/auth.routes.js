@@ -4,8 +4,11 @@ const { Router } = require("express");
 const authController = require("./auth.controller");
 const validator = require("../../../middlewares/validator.middleware");
 const validatorPattern = require("./auth.validator");
+const isLoginUser = require("../../../middlewares/isLogin");
 //router
 const router = Router();
+//middlewares
+router.use(isLoginUser);
 //login route
 router
   .route("/login")
@@ -23,7 +26,5 @@ router
     validator(validatorPattern.changePassword),
     authController.changePassword,
   );
-
-router.route("/refreshToken").post(authController.accessToken);
 //exports
 module.exports = router;

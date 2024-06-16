@@ -1,5 +1,4 @@
 //Auth controller Login Handler
-const crypto = require("crypto");
 const userModel = require("../../../models/v1/user");
 const bcrypt = require("bcrypt");
 const sessionModel = require("../../../models/v1/session.Model");
@@ -149,30 +148,5 @@ exports.changePassword = async (req, res, next) => {
     return response.errorResponse(res, 400, "error", "change faild");
   } catch (err) {
     next(err);
-  }
-};
-//generate AccessToken
-exports.accessToken = async function (req, res, next) {
-  try {
-    const { token } = req.body;
-    const user = await refreshTokenModel.verifyToken(token);
-    if (!user) {
-      return response.errorResponse(
-        res,
-        401,
-        "not found",
-        "please login again token is expire",
-      );
-    }
-    const accessToken = jsonwebtoken.sign(
-      { id: user._id },
-      process.env["JWT_SECRET"],
-      {
-        expiresIn: process.env["ACCESS_TOKEN_EXPIRE"],
-      },
-    );
-    return response.successResponse(res, 201, { accessToken });
-  } catch (e) {
-    next(e);
   }
 };
